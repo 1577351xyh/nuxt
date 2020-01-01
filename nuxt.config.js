@@ -40,7 +40,11 @@ export default {
   ** Nuxt.js modules
   */
   modules: [
+    '@nuxtjs/axios',
+    '@nuxtjs/proxy',
   ],
+  
+  axios: {},
   /*
   ** Build configuration
   */
@@ -49,7 +53,18 @@ export default {
     /*
     ** You can extend webpack config here
     */
-    extend (config, ctx) {
+    extend(config, ctx) {
     }
-  }
+  },
+  proxy: {
+    '/api':{
+      //转发
+      target:'http://localhost:7001',
+      secur:false,
+      pathRewrite:{
+        //把api开头的地址转为空的
+        '^/api':""
+      }
+    }
+  },
 }
