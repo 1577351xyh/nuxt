@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <el-form ref="form" :model="form" class="login-form">
+    <el-form :rule="registerRule" ref="form" :model="form" class="login-form">
       <div class="title-container">
         <img src="/logo.png" alt="" style="width:200px" />
       </div>
@@ -37,7 +37,7 @@
       </el-form-item>
 
 <!-- 4位数验证测试 -->
-      <el-form-item prop="emailCode" class="email-code">
+      <!-- <el-form-item prop="emailCode" class="email-code">
         <div class="send-email-btn">
           <img :src="code.captcha" @click="resetCptcha" alt="">
         </div>
@@ -51,7 +51,7 @@
           name="emailCode"
         >
         </el-input>
-      </el-form-item>
+      </el-form-item> -->
 <!-- 4位数验证测试 -->
 
 
@@ -100,7 +100,7 @@
         >
         </el-input>
       </el-form-item>
-      <el-button type="primary" style="width:100%;margin-bottom:30px">
+      <el-button type="primary" @click.native.prevent='handleRegister' style="width:100%;margin-bottom:30px">
         注册
       </el-button>
     </el-form>
@@ -114,13 +114,44 @@ export default {
       passwordType: "password",
       form: {
         email: "564146958@qq.com",
-        number: "",
-        nickname: "",
-        password: "",
-        emailCode: ""
+        nickname: "休息休息",
+        password: "123446",
+        emailcode: "3456",
+        repassword:"123456"
       },
       code: {
         captcha: "/api/user/captcha"
+      },
+      registerRule:{
+        email:[
+          {required:true,message:'请输入邮箱'},
+          {type:'email',message:'请输入正确的邮箱'}
+        ],
+        password:[
+          {required:true,message:'请输入密码'},
+          {max:12,message:'密码长度12位以内'}
+        ],
+        emailCode:[
+          {required:true,message:'请输入邮箱验证码'}
+        ],
+        captcha:[
+          {required:true,message:'请输入验证码'}
+        ],
+        repassword:[
+          {
+            required:true,
+            trigger:'blur',
+            //验证方法
+            validator:(rule,value,callback)=>{
+              console.log(value)
+              if(value!==this.form.password){
+                console.log('输入不一致')
+              }else{
+                console.log('输入一致') 
+              }
+            }
+          }
+        ]
       }
     };
   },
@@ -141,6 +172,22 @@ export default {
     async sendCode() {
       let ret = await this.$http.get(`/user/sendcode?email=${this.form.email}`);
       console.log(ret);
+    },
+    //登录验证
+    handleRegister(){
+      this.$refs.form.validate(async valid=>{
+        console.log(valid)
+        if(valid){
+          let obj = {
+            email: this.form.email,
+            password: this.form.password,
+            emailcode: this.form.emailcode,
+            captcha: this.form.captcha,
+            nickname: this.form.nickname
+          }
+          let ret = await this.$http.post('/user/register',obj)
+        }
+      })
     }
   }
 };
