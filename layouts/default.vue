@@ -1,6 +1,8 @@
 <template>
   <div>
+    <h1>我是头部</h1>
     <nuxt />
+    <h1>我是底部</h1>
   </div>
 </template>
 

@@ -29,7 +29,8 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@/plugins/element-ui'
+    '@/plugins/element-ui',
+    '@/plugins/axios'
   ],
   /*
   ** Nuxt.js dev-modules
@@ -43,7 +44,6 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/proxy',
   ],
-  
   axios: {},
   /*
   ** Build configuration
@@ -54,16 +54,17 @@ export default {
     ** You can extend webpack config here
     */
     extend(config, ctx) {
+
     }
   },
   proxy: {
-    '/api':{
+    '/api': {
       //转发
-      target:'http://localhost:7001',
-      secur:false,
-      pathRewrite:{
+      target: 'http://localhost:7001',
+      secur: false,
+      pathRewrite: {
         //把api开头的地址转为空的
-        '^/api':""
+        '^/api': ""
       }
     }
   },
