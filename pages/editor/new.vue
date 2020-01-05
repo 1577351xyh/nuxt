@@ -56,9 +56,7 @@ export default {
           type: "success",
           message: `文章《${ret.data.title}》创建成功`
         });
-        // setTimeout(() => {
-        //   this.$router.push({ path: "/article/" + ret.data.id });
-        // });
+        
       }
     }
   }

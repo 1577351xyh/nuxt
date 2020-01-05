@@ -14,7 +14,6 @@
 export default {
   async mounted(){
     let res = await this.$http.get('/info')
-    console.log(res)
   }
 }
 </script>
