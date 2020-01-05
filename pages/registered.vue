@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <el-form :rule="registerRule" ref="form" :model="form" class="login-form">
+    <el-form :rules="registerRule" ref="form" :model="form" class="login-form">
       <div class="title-container">
         <img src="/logo.png" alt="" style="width:200px" />
       </div>
@@ -29,31 +29,30 @@
         <!-- 邮箱验证码 -->
         <el-input
           ref="emailCode"
-          v-model="form.emailCode"
+          v-model="form.emailcode"
           placeholder="邮箱验证码"
           name="emailCode"
         >
         </el-input>
       </el-form-item>
 
-<!-- 4位数验证测试 -->
-      <!-- <el-form-item prop="emailCode" class="email-code">
+      <!-- 4位数验证测试 -->
+      <el-form-item prop="emailCode" class="email-code">
         <div class="send-email-btn">
-          <img :src="code.captcha" @click="resetCptcha" alt="">
+          <img :src="code.captcha" @click="resetCptcha" alt="" />
         </div>
         <span class="svg-container">
           <i class="el-icon-user"> </i>
         </span>
         <el-input
           ref="emailCode"
-          v-model="form.emailCode"
+          v-model="form.captcha"
           placeholder="请输入右边验证码 "
           name="emailCode"
         >
         </el-input>
-      </el-form-item> -->
-<!-- 4位数验证测试 -->
-
+      </el-form-item>
+      <!-- 4位数验证测试 -->
 
       <el-form-item prop="nickname">
         <span class="svg-container">
@@ -100,7 +99,11 @@
         >
         </el-input>
       </el-form-item>
-      <el-button type="primary" @click.native.prevent='handleRegister' style="width:100%;margin-bottom:30px">
+      <el-button
+        type="primary"
+        @click.native.prevent="handleRegister"
+        style="width:100%;margin-bottom:30px"
+      >
         注册
       </el-button>
     </el-form>
@@ -108,7 +111,6 @@
 </template>
 <script>
 export default {
-  layout: "login",
   data() {
     return {
       passwordType: "password",
@@ -116,38 +118,35 @@ export default {
         email: "564146958@qq.com",
         nickname: "休息休息",
         password: "123446",
-        emailcode: "3456",
-        repassword:"123456"
+        emailcode: "",
+        repassword: "123456",
+        captcha: ""
       },
       code: {
         captcha: "/api/user/captcha"
       },
-      registerRule:{
-        email:[
-          {required:true,message:'请输入邮箱'},
-          {type:'email',message:'请输入正确的邮箱'}
+      registerRule: {
+        email: [
+          { required: true, message: "请输入邮箱" },
+          { type: "email", message: "请输入正确的邮箱" }
         ],
-        password:[
-          {required:true,message:'请输入密码'},
-          {max:12,message:'密码长度12位以内'}
+        password: [
+          { required: true, message: "请输入密码" },
+          { max: 12, message: "密码长度12位以内" }
         ],
-        emailCode:[
-          {required:true,message:'请输入邮箱验证码'}
-        ],
-        captcha:[
-          {required:true,message:'请输入验证码'}
-        ],
-        repassword:[
+        emailcode: [{ required: true, message: "请输入邮箱验证码" }],
+        captcha: [{ required: true, message: "请输入验证码" }],
+        repassword: [
           {
-            required:true,
-            trigger:'blur',
+            required: true,
+            trigger: "blur",
             //验证方法
-            validator:(rule,value,callback)=>{
-              console.log(value)
-              if(value!==this.form.password){
-                console.log('输入不一致')
-              }else{
-                console.log('输入一致') 
+            validator: (rule, value, callback) => {
+              console.log(value);
+              if (value !== this.form.password) {
+                console.log("输入不一致");
+              } else {
+                console.log("输入一致");
               }
             }
           }
@@ -155,10 +154,13 @@ export default {
       }
     };
   },
+  mounted() {
+    // this.$http.get('/user/test');
+  },
   methods: {
     //验证码
-    resetCptcha(){
-      this.code.captcha = `/api/user/captcha?_t=${new Date().getTime()}`
+    resetCptcha() {
+      this.code.captcha = `/api/user/captcha?_t=${new Date().getTime()}`;
     },
     //密码显示
     showPwd() {
@@ -174,67 +176,41 @@ export default {
       console.log(ret);
     },
     //登录验证
-    handleRegister(){
-      this.$refs.form.validate(async valid=>{
-        console.log(valid)
-        if(valid){
+    handleRegister() {
+      this.$refs.form.validate(async valid => {
+        console.log(valid);
+        if (valid) {
           let obj = {
             email: this.form.email,
             password: this.form.password,
             emailcode: this.form.emailcode,
             captcha: this.form.captcha,
             nickname: this.form.nickname
+          };
+          let ret = await this.$http.post("/user/register", obj);
+          console.log(ret)
+          if (ret.data.code === 200) {
+            this.$notify({
+              title: "成功",
+              message: ret.data.message,
+              type: "success"
+            });
+            setTimeout(()=>{
+              this.$router.push('/login')
+            },1000)
+          } else {
+            this.$notify({
+              title: "失败",
+              message: ret.data.message,
+              type: "warning"
+            });
           }
-          let ret = await this.$http.post('/user/register',obj)
         }
-      })
+      });
     }
   }
 };
 </script>
-
-<style lang="scss">
-.email-code {
-  width: 340px;
-  position: relative;
-  .send-email-btn {
-    position: absolute;
-    right: -110px;
-    .el-button {
-      width: 90px;
-      height: 50px;
-    }
-    img {
-      width: 90px;
-      height: 50px;
-      cursor: pointer;
-    }
-  }
-}
-/* reset element-ui css */
-.login-container {
-  .el-input {
-    display: inline-block;
-    height: 47px;
-    width: 85%;
-
-    input {
-      background: transparent;
-      border: 0px;
-      -webkit-appearance: none;
-      border-radius: 0px;
-      padding: 12px 5px 12px 15px;
-      height: 47px;
-    }
-  }
-
-  .el-form-item {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    // background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-  }
-}
-</style>
 
 <style lang="scss" scoped>
 .login-container {
@@ -296,4 +272,5 @@ export default {
     }
   }
 }
+
 </style>
