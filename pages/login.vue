@@ -53,7 +53,7 @@ export default {
       },
       registerRule: {
         email: [
-          { required: true, message: "请输入邮箱"  },
+          { required: true, message: "请输入邮箱" },
           { type: "email", message: "请输入正确的邮箱" }
         ],
         password: [
@@ -65,15 +65,17 @@ export default {
   },
   methods: {
     login() {
-      this.$refs['form'].validate(async valid => {
+      this.$refs["form"].validate(async valid => {
         if (valid) {
-        let ret = await this.$http.post('/user/login',this.form);
+          // vuex状态管理
+          // let ret = await this.$http.post("/user/login", this.form);
+          let ret = await this.$store.dispatch("user/login", this.form);
         } else {
           console.log("error submit!!");
           return false;
         }
       });
-    },
+    }
   }
 };
 </script>

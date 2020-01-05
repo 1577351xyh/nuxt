@@ -29,7 +29,6 @@ export default ({ store, redirect }) => {
 service.interceptors.response.use(
   async response => {
     let { data, config } = response;
-    console.log('拦截', response)
     if (data.code == 200) {
       if (config.url === '/api/user/login') {
         // 存储token
@@ -45,7 +44,7 @@ service.interceptors.response.use(
         localStorage.removeItem(TOKEN_KEY);
         //重定向
         // redirect({path:'/login'})
-        window.location.href='/login'
+        window.location.href = '/login'
       })
     }
     return data

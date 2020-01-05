@@ -7,10 +7,13 @@
       <el-menu-item index="0">
         <nuxt-link to="/">首页</nuxt-link>
       </el-menu-item>
-      <el-menu-item index="1" class="pull-right">
-        <nuxt-link to="/registered">注册</nuxt-link>
+      <el-menu-item index="1">
+        <nuxt-link to="/editor/new">写文章</nuxt-link>
       </el-menu-item>
       <el-menu-item index="2" class="pull-right">
+        <nuxt-link to="/registered">注册</nuxt-link>
+      </el-menu-item>
+      <el-menu-item index="3" class="pull-right">
         <nuxt-link to="/login">登录</nuxt-link>
       </el-menu-item>
     </el-menu>
@@ -27,7 +30,7 @@ export default {
 </script>
 <style lang="scss" scope>
 .pull-right {
-  float: right!important;
+  float: right !important;
 }
 .email-code {
   width: 340px;
